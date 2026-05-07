@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Fake News Detector</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            text-align: center;
+            padding-top: 60px;
+        }
+
+        .container {
+            background: white;
+            color: black;
+            width: 60%;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
+        }
+
+        textarea {
+            width: 90%;
+            height: 120px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 12px 25px;
+            font-size: 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #5a67d8;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        #confidence {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        #details {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🧠 AI Fake News Detector</h1>
+
+    <div class="container">
+        <textarea id="news" placeholder="Enter news text here..."></textarea>
+        <br>
+        <button onclick="checkNews()">Analyze</button>
+
+        <div id="result"></div>
+        <div id="confidence"></div>
+        <div id="details"></div>
+    </div>
+
+    <script>
+        async function checkNews() {
+            const text = document.getElementById("news").value;
+
+            document.getElementById("result").innerText = "Analyzing...";
+            document.getElementById("confidence").innerText = "";
+            document.getElementById("details").innerText = "";
+
+            const response = await fetch('/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: text })
+            });
+
+            const data = await response.json();
+
+            const resultDiv = document.getElementById("result");
+            const confidenceDiv = document.getElementById("confidence");
+            const detailsDiv = document.getElementById("details");
+
+            resultDiv.innerText = data.prediction;
+            confidenceDiv.innerText = "Confidence: " + data.confidence + "%";
+            detailsDiv.innerText = data.details;
+
+            // COLORS
+            if (data.prediction.includes("Fact")) {
+                resultDiv.style.color = "green";
+            }
+            else if (data.prediction.includes("Fake") || data.prediction.includes("Suspicious")) {
+                resultDiv.style.color = "red";
+            }
+            else {
+                resultDiv.style.color = "black";
+            }
+        }
+    </script>
+
+</body>
+</html>
