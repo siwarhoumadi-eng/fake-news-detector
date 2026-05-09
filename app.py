@@ -1,74 +1,72 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, render_template
 import requests
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return send_file('index.html')
+    return render_template('index.html')
 
 @app.route('/check', methods=['POST'])
 def check_news():
+
     data = request.json
     text = data.get("text", "")
 
-    API_KEY = "AlzaSyXXXX"
+    API_KEY = "AlzaSyxxxxxxxxxxxxx"
 
     url = "https://factchecktools.googleapis.com/v1alpha1/claims:search"
+
     params = {
         "query": text,
         "key": API_KEY
     }
 
-    response = requests.get(url, params=params)
-    result = response.json()
+    try:
 
-    # If Google found something
-    if "claims" in result and len(result["claims"]) > 0:
-        return jsonify({
-            "prediction": "Fact-checked",
-            "details": "Verified by fact-check sources",
-            "confidence": 90
-        })
+        response = requests.get(url, params=params)
 
-    text_lower = text.lower()
+        result = response.json()
 
-    fake_indicators = [
-        "shocking", "secret", "miracle",
-        "they don't want you to know",
-        "100% cure", "guaranteed"
-    ]
+        if "claims" in result and len(result["claims"]) > 0:
 
-    absurd_indicators = [
-        "moon is made of cheese",
-        "earth is flat",
-        "humans don't need oxygen"
-    ]
-
-    for phrase in absurd_indicators:
-        if phrase in text_lower:
             return jsonify({
-                "prediction": "Fake News",
-                "details": "Scientifically incorrect claim",
-                "confidence": 95
+                "prediction": "Fact Checked",
+                "details": "Reliable sources verified this information.",
+                "confidence": 92
             })
 
-    score = 0
-    for word in fake_indicators:
-        if word in text_lower:
-            score += 1
+        text_lower = text.lower()
 
-    if score >= 1:
+        fake_phrases = [
+            "moon is made of cheese",
+            "earth is flat",
+            "humans don't need oxygen"
+        ]
+
+        for phrase in fake_phrases:
+
+            if phrase in text_lower:
+
+                return jsonify({
+                    "prediction": "Fake News",
+                    "details": "Scientifically incorrect information detected.",
+                    "confidence": 97
+                })
+
         return jsonify({
-            "prediction": "Suspicious",
-            "details": "Contains misleading language",
-            "confidence": 70
+            "prediction": "Unverified",
+            "details": "No reliable verification found.",
+            "confidence": 45
         })
 
-    return jsonify({
-        "prediction": "Unverified",
-        "details": "No reliable data found",
-        "confidence": 40
-    })
+    except Exception as e:
+
+        return jsonify({
+            "prediction": "Error",
+            "details": str(e),
+            "confidence": 0
+        })
+
 if __name__ == "__main__":
     app.run(debug=True)

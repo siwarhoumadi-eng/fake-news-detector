@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>VERITAS • AI Truth Engine</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    radial-gradient(circle at top left,#ff9ec4 0%,transparent 30%),
+    radial-gradient(circle at bottom right,#8ec5ff 0%,transparent 30%),
+    radial-gradient(circle at center,#c9b6ff33 0%,transparent 40%),
+    linear-gradient(135deg,#20152d,#1a1f3c,#131b2f);
+
+    color:white;
+    position:relative;
+}
+
+/* Animated background glow */
+
+.glow1,.glow2{
+    position:absolute;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.25;
+}
+
+.glow1{
+    background:#ff7eb3;
+    top:-150px;
+    left:-100px;
+    animation:move1 10s infinite alternate ease-in-out;
+}
+
+.glow2{
+    background:#7afcff;
+    bottom:-150px;
+    right:-100px;
+    animation:move2 12s infinite alternate ease-in-out;
+}
+
+@keyframes move1{
+    from{transform:translate(0,0);}
+    to{transform:translate(120px,80px);}
+}
+
+@keyframes move2{
+    from{transform:translate(0,0);}
+    to{transform:translate(-120px,-80px);}
+}
+
+/* Floating particles */
+
+.particles{
+    position:absolute;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.particle{
+    position:absolute;
+    width:3px;
+    height:3px;
+    background:rgba(255,255,255,0.25);
+    border-radius:50%;
+    animation:float 18s linear infinite;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(100vh);
+        opacity:0;
+    }
+
+    to{
+        transform:translateY(-10vh);
+        opacity:1;
+    }
+}
+
+/* Main card */
+
+.card{
+    position:relative;
+    z-index:2;
+
+    width:92%;
+    max-width:900px;
+
+    padding:55px;
+
+    border-radius:35px;
+
+    background:rgba(255,255,255,0.08);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,0.12);
+
+    box-shadow:
+    0 25px 60px rgba(0,0,0,0.45),
+    inset 0 1px 1px rgba(255,255,255,0.08);
+
+    animation:floatCard 5s infinite ease-in-out;
+
+    overflow:hidden;
+}
+
+@keyframes floatCard{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-8px);}
+    100%{transform:translateY(0);}
+}
+
+/* AI scanning line */
+
+.scan-line{
+    position:absolute;
+    left:0;
+    width:100%;
+    height:3px;
+
+    background:linear-gradient(to right,transparent,#ffffff88,transparent);
+
+    animation:scan 4s linear infinite;
+}
+
+@keyframes scan{
+    0%{
+        top:0;
+    }
+
+    100%{
+        top:100%;
+    }
+}
+
+/* Logo */
+
+.logo{
+    width:90px;
+    height:90px;
+
+    margin:auto;
+    margin-bottom:25px;
+
+    border-radius:28px;
+
+    background:linear-gradient(145deg,#ffffff22,#ffffff08);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:42px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,0.4);
+}
+
+/* Title */
+
+h1{
+    text-align:center;
+    font-size:62px;
+    font-weight:800;
+    letter-spacing:2px;
+
+    background:linear-gradient(to right,#ffffff,#ffd6f6,#b8e7ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    margin-bottom:12px;
+}
+
+/* Subtitle typing effect */
+
+.subtitle{
+    text-align:center;
+
+    color:#dde7ff;
+
+    margin-bottom:25px;
+
+    font-size:17px;
+
+    white-space:nowrap;
+    overflow:hidden;
+
+    border-right:2px solid rgba(255,255,255,0.5);
+
+    width:0;
+
+    margin-left:auto;
+    margin-right:auto;
+
+    animation:
+    typing 4s steps(40,end) forwards,
+    blink .8s infinite;
+}
+
+@keyframes typing{
+    from{width:0;}
+    to{width:100%;}
+}
+
+@keyframes blink{
+    50%{border-color:transparent;}
+}
+
+/* Clock */
+
+#clock{
+    text-align:center;
+
+    margin-bottom:25px;
+
+    color:#b7c6e0;
+
+    font-size:14px;
+
+    letter-spacing:2px;
+}
+
+/* Text area */
+
+textarea{
+    width:100%;
+    height:190px;
+
+    padding:24px;
+
+    border-radius:28px;
+
+    border:1px solid rgba(255,255,255,0.12);
+
+    background:rgba(255,255,255,0.05);
+
+    color:white;
+
+    resize:none;
+    outline:none;
+
+    font-size:16px;
+
+    transition:.4s;
+}
+
+textarea:focus{
+    transform:scale(1.015);
+
+    box-shadow:0 0 30px rgba(255,255,255,0.08);
+}
+
+textarea::placeholder{
+    color:#c4cde0;
+}
+
+/* Button */
+
+.button-area{
+    display:flex;
+    justify-content:center;
+}
+
+button{
+    margin-top:30px;
+
+    padding:18px 50px;
+
+    border:none;
+
+    border-radius:20px;
+
+    background:linear-gradient(135deg,#ff7eb3,#7afcff);
+
+    color:#1a1a1a;
+
+    font-size:18px;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.35s;
+
+    box-shadow:
+    0 15px 30px rgba(0,0,0,0.35);
+}
+
+button:hover{
+    transform:translateY(-4px) scale(1.05);
+
+    box-shadow:
+    0 20px 40px rgba(0,0,0,0.45);
+}
+
+/* Loading */
+
+.loading{
+    margin-top:25px;
+
+    text-align:center;
+
+    display:none;
+
+    color:#ffffff;
+
+    animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+    0%{opacity:.4;}
+    50%{opacity:1;}
+    100%{opacity:.4;}
+}
+
+/* Result */
+
+.result-box{
+    margin-top:35px;
+
+    padding:30px;
+
+    border-radius:28px;
+
+    display:none;
+
+    animation:fadeUp .6s ease;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.real{
+    background:rgba(34,197,94,0.12);
+    border:1px solid rgba(34,197,94,0.4);
+}
+
+.fake{
+    background:rgba(255,75,75,0.12);
+    border:1px solid rgba(255,75,75,0.4);
+}
+
+.unknown{
+    background:rgba(255,255,255,0.07);
+    border:1px solid rgba(255,255,255,0.12);
+}
+
+.result-box h2{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.result-box p{
+    margin-top:10px;
+    color:#e7edf9;
+}
+
+.confidence{
+    margin-top:18px;
+
+    display:inline-block;
+
+    padding:10px 18px;
+
+    border-radius:14px;
+
+    background:rgba(255,255,255,0.08);
+
+    border:1px solid rgba(255,255,255,0.1);
+}
+
+/* Footer */
+
+.footer-tag{
+    position:absolute;
+
+    bottom:18px;
+    right:25px;
+
+    color:#d0d9ed88;
+
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="glow1"></div>
+<div class="glow2"></div>
+
+<div class="particles" id="particles"></div>
+
+<div class="card">
+
+<div class="scan-line"></div>
+
+<div class="logo">🧠</div>
+
+<h1>VERITAS AI</h1>
+
+<p class="subtitle">
+Advanced intelligent misinformation detection system
+</p>
+
+<div id="clock"></div>
+
+<textarea id="newsInput" placeholder="Paste a news headline, article or statement..."></textarea>
+
+<div class="button-area">
+<button onclick="checkNews()">
+Analyze Information
+</button>
+</div>
+
+<div class="loading" id="loading">
+Analyzing with artificial intelligence...
+</div>
+
+<div class="result-box" id="result"></div>
+
+<div class="footer-tag">
+Powered by AI & Fact Verification
+</div>
+
+</div>
+
+<script>
+
+/* Clock */
+
+setInterval(() => {
+
+    const now = new Date();
+
+    document.getElementById("clock").innerText =
+    now.toLocaleTimeString();
+
+},1000);
+
+/* Particles */
+
+for(let i=0;i<80;i++){
+
+    let particle=document.createElement("div");
+
+    particle.classList.add("particle");
+
+    particle.style.left=Math.random()*100+"vw";
+
+    particle.style.animationDuration=
+    (8+Math.random()*10)+"s";
+
+    particle.style.opacity=Math.random();
+
+    document.getElementById("particles")
+    .appendChild(particle);
+}
+
+/* Main function */
+
+async function checkNews(){
+
+    const text =
+    document.getElementById("newsInput").value;
+
+    const resultDiv =
+    document.getElementById("result");
+
+    const loading =
+    document.getElementById("loading");
+
+    loading.style.display="block";
+
+    resultDiv.style.display="none";
+
+    try{
+
+        const response = await fetch("/check",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                text:text
+            })
+        });
+
+        const data = await response.json();
+
+        loading.style.display="none";
+
+        resultDiv.style.display="block";
+
+        resultDiv.innerHTML = `
+            <h2>${data.prediction}</h2>
+
+            <p>${data.details}</p>
+
+            <div class="confidence">
+                Confidence: ${data.confidence}%
+            </div>
+        `;
+
+        resultDiv.className="result-box";
+
+        if(
+            data.prediction.includes("Fake")
+            ||
+            data.prediction.includes("Suspicious")
+        ){
+            resultDiv.classList.add("fake");
+        }
+
+        else if(
+            data.prediction.includes("Fact")
+        ){
+            resultDiv.classList.add("real");
+        }
+
+        else{
+            resultDiv.classList.add("unknown");
+        }
+
+    }
+
+    catch(error){
+
+        loading.style.display="none";
+
+        resultDiv.style.display="block";
+
+        resultDiv.className="result-box unknown";
+
+        resultDiv.innerHTML=`
+            <h2>Error</h2>
+            <p>The AI system could not analyze the information.</p>
+        `;
+    }
+}
+
+</script>
+
+</body>
+</html>
